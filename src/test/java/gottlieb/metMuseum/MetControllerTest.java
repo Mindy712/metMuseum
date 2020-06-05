@@ -4,13 +4,9 @@ import org.junit.Test;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -30,6 +26,7 @@ public class MetControllerTest {
         controller.requestDepartmentData();
 
         //then
+        //a call was made
         verify(call).enqueue(any());
     }
 
@@ -47,6 +44,7 @@ public class MetControllerTest {
         controller.requestObjects(1);
 
         //then
+        //a call was made
         verify(call).enqueue(any());
     }
 
@@ -64,6 +62,7 @@ public class MetControllerTest {
         controller.requestSingleObject(1);
 
         //then
+        //a call was made
         verify(call).enqueue(any());
     }
 
@@ -76,20 +75,25 @@ public class MetControllerTest {
 
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
+        //Make the list and Departments objects
         MetFeed.DepartmentsList deptList = new MetFeed.DepartmentsList();
         MetFeed.DepartmentsList.Departments depts = new MetFeed.DepartmentsList.Departments();
+
+        //fill list and departments object
         depts.departmentId = 1;
         depts.displayName = "department";
         ArrayList<MetFeed.DepartmentsList.Departments> list = new ArrayList<>();
         list.add(depts);
         deptList.departmentsList = list;
 
+        //return the created list when response.body() is called
         doReturn(deptList).when(response).body();
 
         //when
         controller.fillComboBox(response);
 
         //then
+        //comboBox adds the given item from the list
         verify(comboBox).addItem(deptList.departmentsList.get(0));
     }
 
@@ -108,17 +112,20 @@ public class MetControllerTest {
 
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
+        //Create and fill an objects object
         MetFeed.Objects object = new MetFeed.Objects();
         object.artistDisplayName = "John Smith";
         object.objectName = "Hat";
         object.title = "Hat";
 
+        //return the created object when response.body() is called
         doReturn(object).when(response).body();
 
         //when
         controller.setObjectLabels(response);
 
         //then
+        //ensure the labels are properly set
         verify(label).setText("Name: " + object.objectName);
         verify(label).setText("Description: " + object.title);
         verify(label).setText("Artist: " + object.artistDisplayName);
@@ -134,15 +141,18 @@ public class MetControllerTest {
 
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
+        //create an Objects object and add no image to it
         MetFeed.Objects object = new MetFeed.Objects();
         object.primaryImage = "";
 
+        //return the created object when response.body() is called
         doReturn(object).when(response).body();
 
         //when
         controller.setImage(object);
 
         //then
+        //ensure the label is properly set
         verify(label).setText("No image data available");
     }
 }

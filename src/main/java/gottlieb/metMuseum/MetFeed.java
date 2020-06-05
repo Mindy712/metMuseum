@@ -7,6 +7,7 @@ import java.util.List;
 
 public class MetFeed {
 
+    //List of departments in the Met
     static class DepartmentsList {
         @SerializedName("departments")
         ArrayList<Departments> departmentsList;
@@ -22,12 +23,13 @@ public class MetFeed {
         }
     }
 
+    //List of objects in a particular department
     public static class ObjectsList
     {
-        int total;
-        List<Integer> objectIDs;
+        ArrayList<Integer> objectIDs;
     }
 
+    //Specific object data
     public static class Objects
     {
         String objectName;

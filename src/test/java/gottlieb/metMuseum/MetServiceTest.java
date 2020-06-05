@@ -19,13 +19,16 @@ public class MetServiceTest {
         Response<MetFeed.DepartmentsList> response = service.getDepartments().execute();
 
         //then
+        //call is successful and response is not null
         assertTrue(response.toString(), response.isSuccessful());
         MetFeed.DepartmentsList departmentsFeed = response.body();
         assertNotNull(departmentsFeed);
 
+        //List gets filled
         List<MetFeed.DepartmentsList.Departments> departmentsList = departmentsFeed.departmentsList;
         assertFalse(departmentsList.isEmpty());
 
+        //Department object in List is filled
         final MetFeed.DepartmentsList.Departments department1 = departmentsList.get(0);
         assertNotNull(department1.displayName);
         assertNotNull(department1.departmentId);
@@ -40,11 +43,12 @@ public class MetServiceTest {
         Response<MetFeed.ObjectsList> response = service.getObjectsList(1).execute();
 
         //then
+        //call is successful and response is not null
         assertTrue(response.toString(), response.isSuccessful());
         MetFeed.ObjectsList objectsListFeed = response.body();
         assertNotNull(objectsListFeed);
 
-        assertNotNull(objectsListFeed.total);
+        //objectsIDs gets filled
         assertFalse(objectsListFeed.objectIDs.isEmpty());
     }
 
@@ -57,11 +61,15 @@ public class MetServiceTest {
         Response<MetFeed.Objects> response = service.getObject(1).execute();
 
         //then
+        //call is successful and response is not null
         assertTrue(response.toString(), response.isSuccessful());
         MetFeed.Objects objectFeed = response.body();
         assertNotNull(objectFeed);
 
+        //Object instance gets filled
         assertNotNull(objectFeed.objectName);
+        assertNotNull(objectFeed.title);
         assertNotNull(objectFeed.primaryImage);
+        assertNotNull(objectFeed.artistDisplayName);
     }
 }
