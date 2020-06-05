@@ -85,15 +85,15 @@ public class MetFrame extends JFrame {
         /*Decrements currObj with MetController.getPrev()
         Gets the previous object by calling MetController.requestObjects(departmentID).*/
         backButton.addActionListener(e -> {
-            controller.getPrev();
-            controller.requestObjects(departmentID);
+            int currObj = controller.getPrev();
+            controller.requestSingleObject(currObj);
         });
 
         /*Increments currObj with MetController.getPrev()
         Gets the previous object by calling MetController.requestObjects(departmentID).*/
         nextButton.addActionListener(e -> {
-            controller.getNext();
-            controller.requestObjects(departmentID);
+            int currObj = controller.getNext();
+            controller.requestSingleObject(currObj);
         });
     }
 

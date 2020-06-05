@@ -31,42 +31,6 @@ public class MetControllerTest {
     }
 
     @Test
-    public void requestObjects() {
-        //given
-        MetService service = mock(MetService.class);
-        JComboBox comboBox = mock(JComboBox.class);
-        JLabel label = mock(JLabel.class);
-        Call<MetFeed.ObjectsList> call = mock(Call.class);
-        doReturn(call).when(service).getObjectsList(1);
-        MetController controller = new MetController(service, comboBox, label, label, label, label);
-
-        //when
-        controller.requestObjects(1);
-
-        //then
-        //a call was made
-        verify(call).enqueue(any());
-    }
-
-    @Test
-    public void getSingleObject() {
-        //given
-        MetService service = mock(MetService.class);
-        JComboBox comboBox = mock(JComboBox.class);
-        JLabel label = mock(JLabel.class);
-        Call<MetFeed.Objects> call = mock(Call.class);
-        doReturn(call).when(service).getObject(1);
-        MetController controller = new MetController(service, comboBox, label, label, label, label);
-
-        //when
-        controller.requestSingleObject(1);
-
-        //then
-        //a call was made
-        verify(call).enqueue(any());
-    }
-
-    @Test
     public void fillComboBox() {
         MetService service = mock(MetService.class);
         JComboBox comboBox = mock(JComboBox.class);
@@ -97,10 +61,79 @@ public class MetControllerTest {
         verify(comboBox).addItem(deptList.departmentsList.get(0));
     }
 
-//    @Test
-//    public void getObjectData() {
-//
-//    }
+    @Test
+    public void requestObjects() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+        Call<MetFeed.ObjectsList> call = mock(Call.class);
+        doReturn(call).when(service).getObjectsList(1);
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        //when
+        controller.requestObjects(1);
+
+        //then
+        //a call was made
+        verify(call).enqueue(any());
+    }
+
+    //expect NullPointerException when requestSingleObject(objectId) is called by the test
+    @Test (expected = NullPointerException.class)
+    public void getObjectData() {
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+        Response<MetFeed.ObjectsList> response = mock(Response.class);
+
+        //need mockController to throw the Exception when requestSingleObject(objectId) is called
+        MetController mockController = mock(MetController.class);
+
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        //Create and set objectIDs List
+        MetFeed.ObjectsList objects = new MetFeed.ObjectsList();
+        ArrayList objectIDs = new ArrayList();
+        objectIDs.add(1);
+        objects.objectIDs = objectIDs;
+        Integer objectId = objects.objectIDs.get(0);
+
+        //return the created list when response.body() is called
+        doReturn(objects).when(response).body();
+        //throw the expected exception if requestSingleObject(objectId) is called
+        doThrow(NullPointerException.class).when(mockController).requestSingleObject(objectId);
+
+        //when
+        controller.getObjectData(response);
+
+        //then
+        verify(label).setIcon(null);
+        verify(label).setText("");
+    }
+
+    @Test
+    public void requestSingleObject() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+        Call<MetFeed.Objects> call = mock(Call.class);
+        doReturn(call).when(service).getObject(1);
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        //when
+        controller.requestSingleObject(1);
+
+        //then
+        //a call was made
+        verify(call).enqueue(any());
+    }
+
+    @Test
+    public void setObjectData() {
+
+    }
 
     @Test
     public void setObjectLabels() {
@@ -141,6 +174,31 @@ public class MetControllerTest {
 
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
+        //create an Objects object and add valid image to it
+        MetFeed.Objects object = new MetFeed.Objects();
+        object.primaryImage = "Images/Loading.png";
+
+        //return the created object when response.body() is called
+        doReturn(object).when(response).body();
+
+        //when
+        controller.setImage(object);
+
+        //then
+        //ensure the label is properly set with an image
+        verify(label).setIcon(any());
+    }
+
+    @Test
+    public void setImageNoImage() throws IOException {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+        Response<MetFeed.Objects> response = mock(Response.class);
+
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
         //create an Objects object and add no image to it
         MetFeed.Objects object = new MetFeed.Objects();
         object.primaryImage = "";
@@ -152,8 +210,28 @@ public class MetControllerTest {
         controller.setImage(object);
 
         //then
-        //ensure the label is properly set
+        //ensure the label is properly set if there is no image
         verify(label).setText("No image data available");
+    }
+
+    @Test
+    public void getDepartmentId() {
+
+    }
+
+    @Test
+    public void resetCurrObj() {
+
+    }
+
+    @Test
+    public void getNext() {
+
+    }
+
+    @Test
+    public void getPrev() {
+
     }
 }
 

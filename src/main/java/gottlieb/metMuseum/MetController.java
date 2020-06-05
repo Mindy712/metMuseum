@@ -23,7 +23,8 @@ public class MetController {
     private JLabel objectTitle;
     private JLabel objectArtist;
 
-    //ArrayList of objects in a given department. Set by getObjectData()
+    /*ArrayList of objects in a given department. Set by getObjectData().
+    Used by getNext and getPrev to iterate through objects.*/
     private ArrayList<Integer> objectIDs;
 
     /*Counter of what index object from objectIDs the Frame is showing.
@@ -63,6 +64,16 @@ public class MetController {
         });
     }
 
+    /*Method called on Response of the requestDepartmentData API call.
+    Takes the list of Departments objects from the response and puts them in a MetFeed.Departments object.
+    Loops through the departmentsList and adds each department to the ComboBox.*/
+    public void fillComboBox(Response<MetFeed.DepartmentsList> response) {
+        MetFeed.DepartmentsList departments = response.body();
+        for (MetFeed.DepartmentsList.Departments dept : departments.departmentsList) {
+            departmentsListBox.addItem(dept);
+        }
+    }
+
     //API call to get the list of objects in a given department
     public void requestObjects(int deptId) {
         service.getObjectsList(deptId).enqueue(new Callback<MetFeed.ObjectsList>(){
@@ -78,21 +89,6 @@ public class MetController {
         });
     }
 
-    //Gets the ID of the department the user chose. Called in MetFrame
-    public int getDepartmentId(MetFeed.DepartmentsList.Departments dept) {
-        return dept.departmentId;
-    }
-
-    /*Method called on Response of the requestDepartmentData API call.
-    Takes the list of Departments objects from the response and puts them in a MetFeed.Departments object.
-    Loops through the departmentsList and adds each department to the ComboBox.*/
-    public void fillComboBox(Response<MetFeed.DepartmentsList> response) {
-        MetFeed.DepartmentsList departments = response.body();
-        for (MetFeed.DepartmentsList.Departments dept : departments.departmentsList) {
-            departmentsListBox.addItem(dept);
-        }
-    }
-
     /*Method called on Response of the requestObjects API call.
     Take the list of objectIDs from the response and sets the ArrayList objectIDs as that.
     Resets all JLabels to empty.
@@ -100,15 +96,12 @@ public class MetController {
     Calls requestSingleObject API call with ObjectID.*/
     public void getObjectData(Response<MetFeed.ObjectsList> response) {
         objectIDs = response.body().objectIDs;
-//        System.out.println(objectIDs);
         objectImage.setIcon(null);
         objectImage.setText("Loading...");
         objectName.setText("");
         objectTitle.setText("");
         objectArtist.setText("");
         Integer objectId = objectIDs.get(currObj);
-//        System.out.println("CurrObj: " + currObj);
-//        System.out.println("ObjectId: " + objectId);
         requestSingleObject(objectId);
     }
 
@@ -139,8 +132,6 @@ public class MetController {
     public MetFeed.Objects setObjectLabels(Response<MetFeed.Objects> response) {
         MetFeed.Objects object = response.body();
         objectName.setText("Name: " + object.objectName);
-//        System.out.println(object.objectName);
-//        System.out.println(object.primaryImage);
         objectTitle.setText("Description: " + object.title);
         String artistName = object.artistDisplayName;
         if (artistName.equals("")){
@@ -172,6 +163,11 @@ public class MetController {
         }
     }
 
+    //Gets the ID of the department the user chose. Called in MetFrame
+    public int getDepartmentId(MetFeed.DepartmentsList.Departments dept) {
+        return dept.departmentId;
+    }
+
     //Resets currObj to 0. Called when a new department is chosen, so the objects displayed begin from the first object.
     public int resetCurrObj() {
         return currObj = 0;
@@ -179,25 +175,27 @@ public class MetController {
 
     /*Called when nextArrow is clicked.
     If the currObj is the last in the list, it goes back to 0.
-    Otherwise it increments currObj by 1.*/
-    public void getNext() {
+    Otherwise it increments currObj by 1.
+    It returns the value for "currObj index" object from objectIDs.*/
+    public int getNext() {
         if (currObj == (objectIDs.size() - 1)) {
-            currObj = 0;
+            return objectIDs.get(currObj = 0);
         }
         else {
-            currObj++;
+            return objectIDs.get(++currObj);
         }
     }
 
     /*Called when backArrow is clicked.
     If the currObj is 0, it goes to the last.
-    Otherwise it decrements currObj by 1.*/
-    public void getPrev() {
+    Otherwise it decrements currObj by 1.
+    It returns the value for "currObj index" object from objectIDs.*/
+    public int getPrev() {
         if (currObj == (0)) {
-            currObj = objectIDs.size() - 1;
+            return objectIDs.get(currObj = objectIDs.size() - 1);
         }
         else {
-            currObj--;
+            return objectIDs.get(--currObj);
         }
     }
 }
