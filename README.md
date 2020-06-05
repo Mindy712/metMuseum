@@ -7,7 +7,7 @@ The user can choose what department
 they want. The objects from that department are then displayed. 
 Each object is displayed with an image, a title, and a brief
 description. The arrows can be used to go to the next or previous 
-item. <br />
+item.
 This application was used to assess skills in:
 * APIs
 * JSON
@@ -21,10 +21,10 @@ This application was used to assess skills in:
 
 When there is no image available, the application displays 
 "No Image Data Available".
-![ALT](Images/No_Image_Data.png)<br /><br />
+![ALT](Images/No_Image_Data.png)
 
 While the image is loading, the application displays "Loading..."
-![ALT](Images/Loading.png)<br /><br />
+![ALT](Images/Loading.png)
 
 When there is an image to display, it is shown once fully 
 loaded.
