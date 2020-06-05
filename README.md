@@ -1,4 +1,4 @@
-#MET MUSEUM API DISPLAY
+# MET MUSEUM API DISPLAY
 
 This is an application I wrote for a final project in 
 Computer Methodology. It gets the Departments in the 
