@@ -2,12 +2,12 @@
 
 This is an application I wrote for a final project in 
 Computer Methodology. It gets the Departments in the 
-Met Museum from [their API]("https://metmuseum.github.io/"). 
+Met Museum from [their API](https://metmuseum.github.io/). 
 The user can choose what department 
 they want. The objects from that department are then displayed. 
 Each object is displayed with an image, a title, and a brief
 description. The arrows can be used to go to the next or previous 
-item.
+item.<br />
 This application was used to assess skills in:
 * APIs
 * JSON
