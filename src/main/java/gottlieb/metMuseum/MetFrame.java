@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MetFrame extends JFrame {
 
@@ -14,11 +15,6 @@ public class MetFrame extends JFrame {
     JLabel objectName = new JLabel("");
     JLabel objectTitle = new JLabel("");
     JLabel objectArtist = new JLabel("");
-
-    /*ID of department returned by MetController.getDepartmentID(department).
-    Set when a department is chosen from the ComboBox.
-    Used by backArrow and nextArrow to call the new object.*/
-    int departmentID;
 
     public MetFrame() throws IOException {
         //set up MetFrame
@@ -74,11 +70,10 @@ public class MetFrame extends JFrame {
 
         /*Lambda method called when a department is chosen.
         Sets departmentID with ID of department returned by MetController.getDepartmentID(department).
-        Resets currObj to 0.
         Gets the objects in the department by calling MetController.requestObjects(departmentID).*/
         departmentsList.addActionListener(actionEvent -> {
-            departmentID = controller.getDepartmentId((MetFeed.DepartmentsList.Departments) departmentsList.getSelectedItem());
-            controller.resetCurrObj();
+            MetFeed.DepartmentsList.Departments dept = (MetFeed.DepartmentsList.Departments) departmentsList.getSelectedItem();
+            int departmentID = dept.departmentId;
             controller.requestObjects(departmentID);
         });
 

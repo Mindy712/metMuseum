@@ -66,7 +66,8 @@ public class MetController {
 
     /*Method called on Response of the requestDepartmentData API call.
     Takes the list of Departments objects from the response and puts them in a MetFeed.Departments object.
-    Loops through the departmentsList and adds each department to the ComboBox.*/
+    Loops through the departmentsList and adds each department to the ComboBox.
+    Resets currObj to 0. Called when a new department is chosen, so the objects displayed begin from the first object.*/
     public void fillComboBox(Response<MetFeed.DepartmentsList> response) {
         MetFeed.DepartmentsList departments = response.body();
         for (MetFeed.DepartmentsList.Departments dept : departments.departmentsList) {
@@ -79,6 +80,7 @@ public class MetController {
         service.getObjectsList(deptId).enqueue(new Callback<MetFeed.ObjectsList>(){
             @Override
             public void onResponse(Call<MetFeed.ObjectsList> call, Response<MetFeed.ObjectsList> response) {
+                currObj = 0;
                 getObjectData(response);
             }
 
@@ -91,17 +93,11 @@ public class MetController {
 
     /*Method called on Response of the requestObjects API call.
     Take the list of objectIDs from the response and sets the ArrayList objectIDs as that.
-    Resets all JLabels to empty.
     Sets objectID as the ID that is in the currObj index of the list.
     Calls requestSingleObject API call with ObjectID.*/
     public void getObjectData(Response<MetFeed.ObjectsList> response) {
         objectIDs = response.body().objectIDs;
-        objectImage.setIcon(null);
-        objectImage.setText("Loading...");
-        objectName.setText("");
-        objectTitle.setText("");
-        objectArtist.setText("");
-        Integer objectId = objectIDs.get(currObj);
+        int objectId = objectIDs.get(currObj);
         requestSingleObject(objectId);
     }
 
@@ -120,27 +116,25 @@ public class MetController {
         });
     }
 
-    //Sets object Data using 2 methods. Called by requestSingleObject
-    public void setObjectData(Response<MetFeed.Objects> response) {
-        MetFeed.Objects object = setObjectLabels(response);
-        setImage(object);
-    }
-
-    /*Takes the data about the object from the response and assigns it to MetFeed.Objects object
+    /*Resets all JLabels to empty.
+    Takes the data about the object from the response and assigns it to MetFeed.Objects object
     Sets the JLabels with the appropriate text from the API.
-    Returns the object, for the setImage(object) method to use.*/
-    public MetFeed.Objects setObjectLabels(Response<MetFeed.Objects> response) {
+    Calls the setImage(object) method.*/
+    public void setObjectData(Response<MetFeed.Objects> response) {
+        System.out.println(currObj);
+        System.out.println(objectIDs);
+        objectImage.setIcon(null);
+        objectImage.setText("Loading...");
+        objectName.setText("");
+        objectTitle.setText("");
+        objectArtist.setText("");
         MetFeed.Objects object = response.body();
         objectName.setText("Name: " + object.objectName);
         objectTitle.setText("Description: " + object.title);
-        String artistName = object.artistDisplayName;
-        if (artistName.equals("")){
-            objectArtist.setText("Artist: Unknown");
-        }
-        else {
-            objectArtist.setText("Artist: " + artistName);
-        }
-        return object;
+        setLabel(objectName, object.objectName, "Name");
+        setLabel(objectTitle, object.title, "Title");
+        setLabel(objectArtist, object.artistDisplayName, "Artist");
+        setImage(object);
     }
 
     /*Uses object returned by setObjectsLabels(response)
@@ -161,16 +155,6 @@ public class MetController {
             objectImage.setIcon(null);
             objectImage.setText("No image data available");
         }
-    }
-
-    //Gets the ID of the department the user chose. Called in MetFrame
-    public int getDepartmentId(MetFeed.DepartmentsList.Departments dept) {
-        return dept.departmentId;
-    }
-
-    //Resets currObj to 0. Called when a new department is chosen, so the objects displayed begin from the first object.
-    public int resetCurrObj() {
-        return currObj = 0;
     }
 
     /*Called when nextArrow is clicked.
@@ -196,6 +180,18 @@ public class MetController {
         }
         else {
             return objectIDs.get(--currObj);
+        }
+    }
+
+    /*Sets JLabels with data from the API.
+    Called by setObjectData()
+    Accounts for the possibility of there being no data provided by the API*/
+    public void setLabel(JLabel label, String data, String value) {
+        if(data.equals("")) {
+            label.setText(value + ": Unknown");
+        }
+        else {
+            label.setText(value + ": " + data);
         }
     }
 }

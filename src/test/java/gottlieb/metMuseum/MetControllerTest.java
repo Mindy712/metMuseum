@@ -79,16 +79,16 @@ public class MetControllerTest {
         verify(call).enqueue(any());
     }
 
-    //expect NullPointerException when requestSingleObject(objectId) is called by the test
+    /*expect NullPointerException when requestSingleObject(objectId) is called by the test.
+    If test passes, it means there was a NullPointerException, i.e. requestSingleObject(objectId)
+    was called as expected.*/
     @Test (expected = NullPointerException.class)
     public void getObjectData() {
+        //given
         MetService service = mock(MetService.class);
         JComboBox comboBox = mock(JComboBox.class);
         JLabel label = mock(JLabel.class);
         Response<MetFeed.ObjectsList> response = mock(Response.class);
-
-        //need mockController to throw the Exception when requestSingleObject(objectId) is called
-        MetController mockController = mock(MetController.class);
 
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
@@ -97,19 +97,15 @@ public class MetControllerTest {
         ArrayList objectIDs = new ArrayList();
         objectIDs.add(1);
         objects.objectIDs = objectIDs;
-        Integer objectId = objects.objectIDs.get(0);
 
         //return the created list when response.body() is called
         doReturn(objects).when(response).body();
-        //throw the expected exception if requestSingleObject(objectId) is called
-        doThrow(NullPointerException.class).when(mockController).requestSingleObject(objectId);
 
         //when
         controller.getObjectData(response);
 
         //then
-        verify(label).setIcon(null);
-        verify(label).setText("");
+        verify(controller).requestSingleObject(1);
     }
 
     @Test
@@ -132,11 +128,6 @@ public class MetControllerTest {
 
     @Test
     public void setObjectData() {
-
-    }
-
-    @Test
-    public void setObjectLabels() {
         //given
         MetService service = mock(MetService.class);
         JComboBox comboBox = mock(JComboBox.class);
@@ -155,7 +146,7 @@ public class MetControllerTest {
         doReturn(object).when(response).body();
 
         //when
-        controller.setObjectLabels(response);
+        controller.setObjectData(response);
 
         //then
         //ensure the labels are properly set
@@ -214,24 +205,54 @@ public class MetControllerTest {
         verify(label).setText("No image data available");
     }
 
-    @Test
-    public void getDepartmentId() {
+//    @Test
+//    public void getNext() {
+//
+//    }
+//
+//    @Test
+//    public void getPrev() {
+//
+//    }
 
+    @Test
+    public void setLabel() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        JLabel name = new JLabel("");
+        String data = "Mindy";
+        String value = "Name";
+
+        //when
+        controller.setLabel(name, data, value);
+
+        //then
+        assertTrue(name.getText().equals("Name: Mindy"));
     }
 
     @Test
-    public void resetCurrObj() {
+    public void setLabelNoData() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
 
-    }
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
 
-    @Test
-    public void getNext() {
+        JLabel name = new JLabel("");
+        String data = "";
+        String value = "Name";
 
-    }
+        //when
+        controller.setLabel(name, data, value);
 
-    @Test
-    public void getPrev() {
-
+        //then
+        assertTrue(name.getText().equals("Name: Unknown"));
     }
 }
 
