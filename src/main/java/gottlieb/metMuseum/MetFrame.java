@@ -10,11 +10,11 @@ import java.util.ArrayList;
 public class MetFrame extends JFrame {
 
     //JFrame elements passed to MetController
-    JComboBox<MetFeed.DepartmentsList.Departments> departmentsList = new JComboBox<>();
-    JLabel objectImage = new JLabel("");
-    JLabel objectName = new JLabel("");
-    JLabel objectTitle = new JLabel("");
-    JLabel objectArtist = new JLabel("");
+    private JComboBox<MetFeed.DepartmentsList.Departments> departmentsList = new JComboBox<>();
+    private JLabel objectImage = new JLabel("");
+    private JLabel objectName = new JLabel("");
+    private JLabel objectTitle = new JLabel("");
+    private JLabel objectArtist = new JLabel("");
 
     public MetFrame() throws IOException {
         //set up MetFrame

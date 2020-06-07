@@ -121,8 +121,6 @@ public class MetController {
     Sets the JLabels with the appropriate text from the API.
     Calls the setImage(object) method.*/
     public void setObjectData(Response<MetFeed.Objects> response) {
-        System.out.println(currObj);
-        System.out.println(objectIDs);
         objectImage.setIcon(null);
         objectImage.setText("Loading...");
         objectName.setText("");
