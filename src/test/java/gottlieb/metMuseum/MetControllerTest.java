@@ -134,6 +134,7 @@ public class MetControllerTest {
         JLabel label = mock(JLabel.class);
         Response<MetFeed.Objects> response = mock(Response.class);
 
+        MetController mockController = mock(MetController.class);
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
         //Create and fill an objects object
@@ -141,6 +142,7 @@ public class MetControllerTest {
         object.artistDisplayName = "John Smith";
         object.objectName = "Hat";
         object.title = "Hat";
+        object.primaryImage = "";
 
         //return the created object when response.body() is called
         doReturn(object).when(response).body();
@@ -149,10 +151,8 @@ public class MetControllerTest {
         controller.setObjectData(response);
 
         //then
-        //ensure the labels are properly set
-        verify(label).setText("Name: " + object.objectName);
-        verify(label).setText("Description: " + object.title);
-        verify(label).setText("Artist: " + object.artistDisplayName);
+        //ensure 8 labels are set
+        verify(label, times(8)).setText(any());
     }
 
     @Test
@@ -205,15 +205,69 @@ public class MetControllerTest {
         verify(label).setText("No image data available");
     }
 
-//    @Test
-//    public void getNext() {
-//
-//    }
-//
-//    @Test
-//    public void getPrev() {
-//
-//    }
+    @Test
+    public void getNext() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        //make ArrayList to put in controller.objectIDs
+        ArrayList<Integer> objectIDs = new ArrayList<>();
+        objectIDs.add(0);
+        objectIDs.add(1);
+        objectIDs.add(2);
+        controller.setObjectIDs(objectIDs);
+
+        //when
+        int time1 = controller.getNext();
+        int time2 = controller.getNext();
+        int time3 = controller.getNext();
+
+        //then
+        //after once, index is 1
+        assertTrue(time1 == 1);
+
+        //after twice, index is 2
+        assertTrue(time2 == 2);
+
+        //after three times, index goes back to 0 because list is only 3 ints long
+        assertTrue(time3 == 0);
+    }
+
+    @Test
+    public void getPrev() {
+        //given
+        MetService service = mock(MetService.class);
+        JComboBox comboBox = mock(JComboBox.class);
+        JLabel label = mock(JLabel.class);
+
+        MetController controller = new MetController(service, comboBox, label, label, label, label);
+
+        //make ArrayList to put in controller.objectIDs
+        ArrayList<Integer> objectIDs = new ArrayList<>();
+        objectIDs.add(0);
+        objectIDs.add(1);
+        objectIDs.add(2);
+        controller.setObjectIDs(objectIDs);
+
+        //when
+        int time1 = controller.getPrev();
+        int time2 = controller.getPrev();
+        int time3 = controller.getPrev();
+
+        //then
+        //after once, index is 2, because it goes back to the end of the list
+        assertTrue(time1 == 2);
+
+        //after twice, index is 1
+        assertTrue(time2 == 1);
+
+        //after three times, index is 0
+        assertTrue(time3 == 0);
+    }
 
     @Test
     public void setLabel() {

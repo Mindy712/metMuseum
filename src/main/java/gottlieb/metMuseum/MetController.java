@@ -129,8 +129,6 @@ public class MetController {
         objectTitle.setText("");
         objectArtist.setText("");
         MetFeed.Objects object = response.body();
-        objectName.setText("Name: " + object.objectName);
-        objectTitle.setText("Description: " + object.title);
         setLabel(objectName, object.objectName, "Name");
         setLabel(objectTitle, object.title, "Title");
         setLabel(objectArtist, object.artistDisplayName, "Artist");
@@ -194,4 +192,10 @@ public class MetController {
             label.setText(value + ": " + data);
         }
     }
+
+    //setter for ArrayList objectIDs. Used to test methods getNext() and getPrev()
+    protected void setObjectIDs(ArrayList objectIDs) {
+        this.objectIDs = objectIDs;
+    }
+
 }
