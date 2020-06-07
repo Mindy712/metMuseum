@@ -20,6 +20,7 @@ public class MetControllerTest {
         JLabel label = mock(JLabel.class);
         Call<MetFeed> call = mock(Call.class);
         doReturn(call).when(service).getDepartments();
+
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
         //when
@@ -41,13 +42,13 @@ public class MetControllerTest {
 
         //Make the list and Departments objects
         MetFeed.DepartmentsList deptList = new MetFeed.DepartmentsList();
-        MetFeed.DepartmentsList.Departments depts = new MetFeed.DepartmentsList.Departments();
+        MetFeed.DepartmentsList.Departments dept = new MetFeed.DepartmentsList.Departments();
 
-        //fill list and departments object
-        depts.departmentId = 1;
-        depts.displayName = "department";
+        //fill list and Departments object
+        dept.departmentId = 1;
+        dept.displayName = "department";
         ArrayList<MetFeed.DepartmentsList.Departments> list = new ArrayList<>();
-        list.add(depts);
+        list.add(dept);
         deptList.departmentsList = list;
 
         //return the created list when response.body() is called
@@ -69,6 +70,7 @@ public class MetControllerTest {
         JLabel label = mock(JLabel.class);
         Call<MetFeed.ObjectsList> call = mock(Call.class);
         doReturn(call).when(service).getObjectsList(1);
+
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
         //when
@@ -105,7 +107,8 @@ public class MetControllerTest {
         controller.getObjectData(response);
 
         //then
-        verify(controller).requestSingleObject(1);
+        /*Unnecessary because the NullPointerEException is thrown when requestSingleObject() is called,
+        when controller.getObjectData(response) is called.*/
     }
 
     @Test
@@ -116,6 +119,7 @@ public class MetControllerTest {
         JLabel label = mock(JLabel.class);
         Call<MetFeed.Objects> call = mock(Call.class);
         doReturn(call).when(service).getObject(1);
+
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
         //when
@@ -134,7 +138,6 @@ public class MetControllerTest {
         JLabel label = mock(JLabel.class);
         Response<MetFeed.Objects> response = mock(Response.class);
 
-        MetController mockController = mock(MetController.class);
         MetController controller = new MetController(service, comboBox, label, label, label, label);
 
         //Create and fill an objects object
@@ -156,7 +159,7 @@ public class MetControllerTest {
     }
 
     @Test
-    public void setImage() throws IOException {
+    public void setImage() {
         //given
         MetService service = mock(MetService.class);
         JComboBox comboBox = mock(JComboBox.class);
@@ -181,7 +184,7 @@ public class MetControllerTest {
     }
 
     @Test
-    public void setImageNoImage() throws IOException {
+    public void setImageNoImage() {
         //given
         MetService service = mock(MetService.class);
         JComboBox comboBox = mock(JComboBox.class);

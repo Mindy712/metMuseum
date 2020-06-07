@@ -64,10 +64,9 @@ public class MetController {
         });
     }
 
-    /*Method called on Response of the requestDepartmentData API call.
+    /*Method called on response of the requestDepartmentData API call.
     Takes the list of Departments objects from the response and puts them in a MetFeed.Departments object.
-    Loops through the departmentsList and adds each department to the ComboBox.
-    Resets currObj to 0. Called when a new department is chosen, so the objects displayed begin from the first object.*/
+    Loops through the departmentsList and adds each department to the ComboBox.*/
     public void fillComboBox(Response<MetFeed.DepartmentsList> response) {
         MetFeed.DepartmentsList departments = response.body();
         for (MetFeed.DepartmentsList.Departments dept : departments.departmentsList) {
@@ -75,7 +74,8 @@ public class MetController {
         }
     }
 
-    //API call to get the list of objects in a given department
+    /*API call to get the list of objects in a given department
+    Resets currObj to 0. Called when a new department is chosen, so the objects displayed begin from the first object.*/
     public void requestObjects(int deptId) {
         service.getObjectsList(deptId).enqueue(new Callback<MetFeed.ObjectsList>(){
             @Override
@@ -93,8 +93,8 @@ public class MetController {
 
     /*Method called on Response of the requestObjects API call.
     Take the list of objectIDs from the response and sets the ArrayList objectIDs as that.
-    Sets objectID as the ID that is in the currObj index of the list.
-    Calls requestSingleObject API call with ObjectID.*/
+    Sets objectID as the ID that is in the "currObj index" of the list.
+    Calls requestSingleObject API call with objectID.*/
     public void getObjectData(Response<MetFeed.ObjectsList> response) {
         objectIDs = response.body().objectIDs;
         int objectId = objectIDs.get(currObj);
@@ -116,9 +116,9 @@ public class MetController {
         });
     }
 
-    /*Resets all JLabels to empty.
+    /*Resets all JLabels to empty, or "loading...", to allow for loading time from the API call.
     Takes the data about the object from the response and assigns it to MetFeed.Objects object
-    Sets the JLabels with the appropriate text from the API.
+    Sets the JLabels with the appropriate text from the API, using setLabel(label, data, value).
     Calls the setImage(object) method.*/
     public void setObjectData(Response<MetFeed.Objects> response) {
         objectImage.setIcon(null);
@@ -133,11 +133,11 @@ public class MetController {
         setImage(object);
     }
 
-    /*Uses object returned by setObjectsLabels(response)
+    /*Uses object created in setObjectData, from the API call.
     Tries to get the image from the URL as a BufferedImage.
     Resizes the image.
     Sets the label to display that icon and no text.
-    If that fails (because there is no image), label is set as No Image Data Available, with no Icon.*/
+    If that fails (likely because there is no image), label is set as No Image Data Available, with no Icon.*/
     public void setImage(MetFeed.Objects object) {
         try {
             BufferedImage img = ImageIO.read(new URL(object.primaryImage));
@@ -154,7 +154,7 @@ public class MetController {
     }
 
     /*Called when nextArrow is clicked.
-    If the currObj is the last in the list, it goes back to 0.
+    If the currObj is the last index in the list, it goes back to 0.
     Otherwise it increments currObj by 1.
     It returns the value for "currObj index" object from objectIDs.*/
     public int getNext() {
@@ -167,7 +167,7 @@ public class MetController {
     }
 
     /*Called when backArrow is clicked.
-    If the currObj is 0, it goes to the last.
+    If the currObj is 0, it goes to the last index in the list.
     Otherwise it decrements currObj by 1.
     It returns the value for "currObj index" object from objectIDs.*/
     public int getPrev() {
@@ -181,7 +181,7 @@ public class MetController {
 
     /*Sets JLabels with data from the API.
     Called by setObjectData()
-    Accounts for the possibility of there being no data provided by the API*/
+    Accounts for the possibility of there being no data provided by the API for a given label.*/
     public void setLabel(JLabel label, String data, String value) {
         if(data.equals("")) {
             label.setText(value + ": Unknown");

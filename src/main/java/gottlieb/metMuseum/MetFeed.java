@@ -3,15 +3,16 @@ package gottlieb.metMuseum;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MetFeed {
 
-    //List of departments in the Met
+    //Class of list of Departments in the Met, and the Departments class that populates it
     static class DepartmentsList {
+        //List of departments in the Met
         @SerializedName("departments")
         ArrayList<Departments> departmentsList;
 
+        //Departments objects that populate departmentsList
         static class Departments {
             int departmentId;
             String displayName;
@@ -23,13 +24,13 @@ public class MetFeed {
         }
     }
 
-    //List of objects in a particular department
+    //List of objects in a particular department in the Met
     public static class ObjectsList
     {
         ArrayList<Integer> objectIDs;
     }
 
-    //Specific object data
+    //Data about a specific object from the Met.
     public static class Objects
     {
         String objectName;

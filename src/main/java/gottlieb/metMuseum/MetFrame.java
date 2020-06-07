@@ -1,11 +1,8 @@
 package gottlieb.metMuseum;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MetFrame extends JFrame {
 
@@ -68,8 +65,8 @@ public class MetFrame extends JFrame {
         MetController controller = new MetController(service, departmentsList, objectImage, objectName, objectTitle, objectArtist);
         controller.requestDepartmentData();
 
-        /*Lambda method called when a department is chosen.
-        Sets departmentID with ID of department returned by MetController.getDepartmentID(department).
+        /*Lambda expression called when a department is chosen.
+        Sets departmentID with ID of department that was chosen.
         Gets the objects in the department by calling MetController.requestObjects(departmentID).*/
         departmentsList.addActionListener(actionEvent -> {
             MetFeed.DepartmentsList.Departments dept = (MetFeed.DepartmentsList.Departments) departmentsList.getSelectedItem();
@@ -77,15 +74,17 @@ public class MetFrame extends JFrame {
             controller.requestObjects(departmentID);
         });
 
-        /*Decrements currObj with MetController.getPrev()
-        Gets the previous object by calling MetController.requestObjects(departmentID).*/
+        /*Lamda expression called when backButton is clicked.
+        Decrements currObj and gets back the previous objectID, with MetController.getPrev().
+        Gets the previous object by calling requestSingleObject(currObj).*/
         backButton.addActionListener(e -> {
             int currObj = controller.getPrev();
             controller.requestSingleObject(currObj);
         });
 
-        /*Increments currObj with MetController.getPrev()
-        Gets the previous object by calling MetController.requestObjects(departmentID).*/
+        /*Lamda expression called when nextButton is clicked.
+        Increments currObj and gets back the nex objectID, with MetController.getPrev().
+        Gets the next object by calling requestSingleObject(currObj).*/
         nextButton.addActionListener(e -> {
             int currObj = controller.getNext();
             controller.requestSingleObject(currObj);
